@@ -1,7 +1,19 @@
+"""
+Database migration script to add input_data and output_data columns.
+
+This script connects to ClickHouse and executes ALTER TABLE statements to add new columns.
+"""
+
 import clickhouse_connect
 import sys
 
 def migrate_db():
+    """
+    Migrate the database schema to include input/output columns.
+
+    This function adds 'input_data' and 'output_data' columns to the 'agent_events' table
+    if they do not already exist.
+    """
     try:
         client = clickhouse_connect.get_client(
             host='localhost',

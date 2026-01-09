@@ -1,3 +1,9 @@
+"""
+OLAP storage writer for ClickHouse.
+
+This module handles the insertion of agent events into the ClickHouse database.
+"""
+
 import clickhouse_connect
 from datetime import datetime
 
@@ -9,6 +15,12 @@ client = clickhouse_connect.get_client(
 )
 
 def write_event(event: dict):
+    """
+    Write an event to the ClickHouse 'agent_events' table.
+
+    Args:
+        event (dict): The event data dictionary containing all required fields.
+    """
     client.insert(
         table='agent_events',
         data=[[

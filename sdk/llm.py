@@ -1,3 +1,10 @@
+"""
+LLM utility module.
+
+This module provides functions to interact with LLM providers (specifically Groq),
+calculate costs, and structure the response metadata.
+"""
+
 import os
 import time
 from groq import Groq
@@ -13,6 +20,16 @@ MODEL_PRICING = {
 }
 
 def call_llm(prompt: str, model="llama-3.1-8b-instant"):
+    """
+    Call the LLM and return the response with metadata.
+
+    Args:
+        prompt (str): The input prompt for the LLM.
+        model (str, optional): The model identifier. Defaults to "llama-3.1-8b-instant".
+
+    Returns:
+        dict: A dictionary containing the response text, usage statistics, cost, and duration.
+    """
     start = time.time()
 
     completion = client.chat.completions.create(

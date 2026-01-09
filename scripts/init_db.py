@@ -1,7 +1,18 @@
+"""
+Database initialization script.
+
+This script reads the SQL schema file and initializes the database tables in ClickHouse.
+"""
+
 import clickhouse_connect
 import os
 
 def init_db():
+    """
+    Initialize the ClickHouse database schema.
+
+    Reads `storage/olap/agent_events.sql` and executes the statements against the database.
+    """
     client = clickhouse_connect.get_client(
         host='localhost',
         port=8123,

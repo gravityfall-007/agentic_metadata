@@ -1,7 +1,19 @@
+"""
+Verification script for data ingestion.
+
+This script queries the ClickHouse database to verify that events (including input/output data)
+are being correctly stored.
+"""
+
 import clickhouse_connect
 import sys
 
 def verify():
+    """
+    Connect to ClickHouse and verify event storage.
+
+    Prints the total event count and specific details of the latest event.
+    """
     try:
         client = clickhouse_connect.get_client(
             host='localhost',

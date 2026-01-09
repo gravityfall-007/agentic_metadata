@@ -1,3 +1,9 @@
+"""
+Test script for verifying event emissions.
+
+This script sends a sample event payload to the ingestion API to verify connectivity and validation.
+"""
+
 import requests
 import time
 import json
