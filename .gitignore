@@ -1,0 +1,63 @@
+# =========================
+# Environment & Secrets
+# =========================
+.env
+.env.*
+*.key
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# =========================
+# Virtual Environments
+# =========================
+venv/
+.env_venv/
+.venv/
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDEs
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# Streamlit
+# =========================
+.streamlit/secrets.toml
+
+# =========================
+# Data Artifacts
+# =========================
+data/raw/*
+data/processed/*
+reports/*.json
+
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# Notebooks
+# =========================
+*.ipynb
