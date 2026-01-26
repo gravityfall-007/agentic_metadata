@@ -9,14 +9,14 @@ import time
 import json
 
 event = {
-    "event_id": "test-id-2",
-    "agent_id": "test-agent",
+    "event_id": "test-id-3",
+    "agent_id": "test-agent-3",
     "step_type": "test",
-    "model": "test-model_1",
-    "tokens_in": 20,
-    "tokens_out": 50,
-    "cost_usd": 0.001,
-    "duration_ms": 100,
+    "model": "test-model_3",
+    "tokens_in": 200,
+    "tokens_out": 5087,
+    "cost_usd": 0.0010,
+    "duration_ms": 190,
     "status": "success",
     "timestamp": time.time(),
 }

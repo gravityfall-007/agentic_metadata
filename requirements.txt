@@ -4,4 +4,6 @@ uvicorn
 groq
 python-dotenv
 clickhouse-connect
-
+streamlit
+pandas
+plotly

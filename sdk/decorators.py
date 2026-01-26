@@ -9,6 +9,8 @@ import time
 import uuid
 import json
 from .emitter import emit_event
+from .enterprise.cost import BudgetManager, BudgetExceededError
+from .enterprise.security import SecurityAuditor
 
 def trace_step(step_type: str):
     """
@@ -22,10 +24,18 @@ def trace_step(step_type: str):
     """
     def wrapper(fn):
         def inner(*args, **kwargs):
+            # Enterprise Hook: Check Budget
+            try:
+                BudgetManager().check_pre_flight()
+            except BudgetExceededError as e:
+                SecurityAuditor.log_event("budget_blocked", {"error": str(e)})
+                raise
+
             event_id = str(uuid.uuid4())
             start = time.time()
             status = "success"
             llm_meta = {}
+            result = None # Ensure result is initialized for finally block
 
             try:
                 # Execute the wrapped function
@@ -38,6 +48,19 @@ def trace_step(step_type: str):
                 llm_meta["error"] = str(e)
                 raise
             finally:
+                # Sanitize args to remove 'self' or complex objects
+                sanitized_args = []
+                for arg in args:
+                    s_arg = str(arg)
+                    if s_arg.startswith("<") and "object at" in s_arg:
+                        continue # Skip self/objects
+                    sanitized_args.append(arg)
+
+                # Ensure output is always a dict structure
+                final_output = llm_meta
+                if not final_output:
+                     final_output = {"response": result} if result is not None else {"error": "Execution failed, no result"}
+
                 # Emit the event with collected metadata
                 emit_event({
                     "event_id": event_id,
@@ -50,9 +73,18 @@ def trace_step(step_type: str):
                     "duration_ms": llm_meta.get("duration_ms")
                         or int((time.time() - start) * 1000),
                     "status": status,
-                    "input_data": json.dumps({"args": args, "kwargs": kwargs}, default=str),
-                    "output_data": json.dumps(llm_meta if llm_meta else result, default=str),
+                    "input_data": json.dumps({"args": sanitized_args, "kwargs": kwargs}, default=str),
+                    "output_data": json.dumps(final_output, default=str),
                     "timestamp": time.time()
                 })
+                
+                # Enterprise Hook: Record Cost
+                if llm_meta.get("cost_usd"):
+                    try:
+                        BudgetManager().record_cost(llm_meta.get("cost_usd"))
+                    except BudgetExceededError as e:
+                        # e.g. Log it, but the call already succeeded so we don't block return
+                        SecurityAuditor.log_event("budget_exceeded_post_call", {"error": str(e)})
+
         return inner
     return wrapper

@@ -14,7 +14,7 @@ from sdk.decorators import trace_step
 from sdk.llm import call_llm
 
 @trace_step("llm_call")
-def agent_step():
+def agent_step(prompt: str):
     """
     Execute a step in the agent workflow.
 
@@ -25,10 +25,11 @@ def agent_step():
         dict: The LLM response and metadata.
     """
     return call_llm(
-        prompt="Explain the benefits of Clickhouse db instead of Postgres",
+        prompt=prompt,
         model="llama-3.1-8b-instant"
     )
 
 if __name__ == "__main__":
-    result = agent_step()
+    result = agent_step("Explain in detail the sensory experience of a color that does not exist in our visible spectrum, as perceived by a human who has never seen it, and how it affects their emotions and thoughts.")
     print("\nLLM RESPONSE:\n", result["response"])
+
